@@ -1,14 +1,14 @@
-name: .NET Core
+name: Edge Workflow
 
 on:
   push:
-    branches: [ master, feature/edge/**, hotfix/**, bugfix/edge/**, dev ]
+    branches: [ master, feature/edge/**, hotfix/**, bugfix/edge/**, dev, release/** ]
   pull_request:
     branches: [ master, dev ]
 
 jobs:
   build:
-    name: Build
+    name: Build Edge
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -27,7 +27,7 @@ jobs:
         sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE DATABASE edge;"
         sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE USER "$(id -u -n)" ENCRYPTED PASSWORD 'admin';"
         sudo -u postgres psql -v ON_ERROR_STOP=1 -c "GRANT ALL PRIVILEGES ON DATABASE edge TO "$(id -u -n)";"
-        sudo -u postgres psql -v ON_ERROR_STOP=1 -d edge -f Database/script.sql"
+        sudo -u postgres psql -v ON_ERROR_STOP=1 -d edge -f Database/script.sql
         echo "{\"ConnectionStrings\": {\"Database\": \"server=localhost;port = 5432;database=edge;user id="$(id -u -n)";password=admin;\"}}" > appsettings.Staging.json
 
     - name: Setup .NET Core
