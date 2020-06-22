@@ -260,3 +260,4 @@ _NCrunch*
 # Custom
 .vs/
 .vscode/
+appsettings.*.json
