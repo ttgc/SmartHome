@@ -1,0 +1,48 @@
+name: Edge Workflow
+
+on:
+  push:
+    branches: [ master, feature/edge/**, hotfix/**, bugfix/edge/**, dev, release/** ]
+  pull_request:
+    branches: [ master, dev ]
+
+jobs:
+  build:
+    name: Build Edge
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Edge
+    steps:
+    - uses: actions/checkout@master
+        
+    - name: Install Postgresql
+      run: |
+        sudo apt-get update
+        sudo apt-get install -qy postgresql postgresql-server-dev-10 sudo
+        sudo service postgresql start
+    
+    - name: Setup database
+      run: | 
+        sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE DATABASE edge;"
+        sudo -u postgres psql -v ON_ERROR_STOP=1 -c "CREATE USER "$(id -u -n)" ENCRYPTED PASSWORD 'admin';"
+        sudo -u postgres psql -v ON_ERROR_STOP=1 -c "GRANT ALL PRIVILEGES ON DATABASE edge TO "$(id -u -n)";"
+        sudo -u postgres psql -v ON_ERROR_STOP=1 -d edge -f Database/script.sql
+        echo "{\"ConnectionStrings\": {\"Database\": \"server=localhost;port = 5432;database=edge;user id="$(id -u -n)";password=admin;\"}}" > appsettings.Staging.json
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+      env:
+        ASPNETCORE_ENVIRONMENT: Staging
+
+    - name: Build with dotnet
+      run: dotnet publish --configuration Release
+      env:
+        ASPNETCORE_ENVIRONMENT: Staging
+    
+    - name: Execute tests
+      run: dotnet test
+      env:
+        ASPNETCORE_ENVIRONMENT: Staging
