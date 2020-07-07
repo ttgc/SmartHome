@@ -23,13 +23,14 @@ namespace Edge.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            Settings settings = context.Settings.First();
             Stattemperature stats = context.Stattemperature.Find(DateTime.Now.ToString("yyyy"));
             if (stats == null) return StatusCode(404);
 
             return Ok(new StatDTO() { 
                 average = stats.Average, std_deviation = stats.StdDeviation,
                 clim_duration = stats.ClimDuration.TotalHours, heat_duration = stats.HeatDuration.TotalHours,
-                year = stats.Statyear
+                year = stats.Statyear, temperature_unit = settings.TempUnit.Value
             });
         }
 

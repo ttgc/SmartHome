@@ -12,5 +12,6 @@ namespace Edge.DTO
         public double std_deviation { get; set; }
         public double heat_duration { get; set; }
         public double clim_duration { get; set; }
+        public char temperature_unit { get; set; }
     }
 }
