@@ -29,7 +29,8 @@ namespace Edge.Controllers
         [HttpPost("{value}")]
         public IActionResult Post(double value)
         {
-            Temperature previous = context.Temperature.OrderBy(s => s.Timer).Last();
+            IQueryable<Temperature> temperatures = context.Temperature.OrderBy(s => s.Timer);
+            Temperature previous = temperatures.Count() > 0 ? temperatures.Last() : null;
             if (previous == null)
             {
                 previous = new Temperature() { 
