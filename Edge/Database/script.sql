@@ -1,6 +1,8 @@
 CREATE TABLE public.Temperature(
 	timer		    TIMESTAMP WITH TIME ZONE ,
 	val					FLOAT CONSTRAINT temperature_val_notnull NOT NULL ,
+	heat_on     BOOLEAN ,
+	clim_on			BOOLEAN ,
 	CONSTRAINT prk_constraint_temperature PRIMARY KEY (timer)
 )WITHOUT OIDS;
 
@@ -32,3 +34,4 @@ CREATE TABLE public.UnitsTemperature(
 ALTER TABLE public.settings ADD CONSTRAINT FK_tempunit_unitstempcode FOREIGN KEY (temp_unit) REFERENCES public.UnitsTemperature(code);
 
 INSERT INTO UnitsTemperature VALUES ('C', 'Celsius'), ('F', 'Fahrenheit');
+INSERT INTO Settings VALUES ('SmartHome', 30.0, 23.0, 15.0, 20.0, 'C');

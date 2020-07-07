@@ -20,14 +20,14 @@ namespace Edge.Database.Models
         public virtual DbSet<Temperature> Temperature { get; set; }
         public virtual DbSet<Unitstemperature> Unitstemperature { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseNpgsql("Host=localhost;Database=edge;Username=postgres");
             }
-        }
+        }*/
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -89,6 +89,10 @@ namespace Edge.Database.Models
                 entity.Property(e => e.Timer)
                     .HasColumnName("timer")
                     .HasColumnType("timestamp with time zone");
+
+                entity.Property(e => e.ClimOn).HasColumnName("clim_on");
+
+                entity.Property(e => e.HeatOn).HasColumnName("heat_on");
 
                 entity.Property(e => e.Val).HasColumnName("val");
             });

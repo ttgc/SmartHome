@@ -7,5 +7,7 @@ namespace Edge.Database.Models
     {
         public DateTime Timer { get; set; }
         public double Val { get; set; }
+        public bool? HeatOn { get; set; }
+        public bool? ClimOn { get; set; }
     }
 }
