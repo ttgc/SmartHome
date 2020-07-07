@@ -23,7 +23,14 @@ namespace Edge.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return StatusCode(404);
+            Stattemperature stats = context.Stattemperature.Find(DateTime.Now.ToString("yyyy"));
+            if (stats == null) return StatusCode(404);
+
+            return Ok(new StatDTO() { 
+                average = stats.Average, std_deviation = stats.StdDeviation,
+                clim_duration = stats.ClimDuration.TotalHours, heat_duration = stats.HeatDuration.TotalHours,
+                year = stats.Statyear
+            });
         }
 
         [HttpPost("{value}")]
