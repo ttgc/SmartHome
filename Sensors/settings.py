@@ -30,12 +30,13 @@ class Settings:
     def setHeatOff(self, v):
         self.heat_off = v
 
-    def FromJson(js):
+    @classmethod
+    def FromJson(cl, js):
         name = js.get("house_name")
         cOn = js.get("clim_on")
         cOff = js.get("clim_off")
         hOn = js.get("heat_on")
         hOff = js.get("heat_off")
         tUnit = js.get("temperature_unit")
-        return Settings(name, cOn, cOff, hOn, hOff, tUnit)
+        return cl(name, cOn, cOff, hOn, hOff, tUnit)
     
