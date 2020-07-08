@@ -20,7 +20,8 @@ MAX_HOUR = 14 #Zenith
 #time in one day in seconds
 TOTAL_DAY_TIME_S = 3600 * 24.0
 
-#the temperature simulator works in degree Celsius, all time calculations are made inside of the class
+#the temperature simulator works in degree Celsius,
+#all time calculations are made inside of the class
 class TemperatureSimulator:
     
     def __init__(self, minT = None, maxT = None, heat = False, clim = False):
