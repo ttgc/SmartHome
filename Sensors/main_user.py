@@ -27,13 +27,7 @@ def helpSet():
 
 def load():
     r = getSettings()
-    name = r.json().get("house_name")
-    cOn = r.json().get("clim_on")
-    cOff = r.json().get("clim_off")
-    hOn = r.json().get("heat_on")
-    hOff = r.json().get("heat_off")
-    tUnit = r.json().get("temperature_unit")
-    return Settings(name, cOn, cOff, hOn, hOff, tUnit)
+    return Settings.FromJson(r.json())
 
 def set(inp, s):
     if(len(inp) != 3):
@@ -67,6 +61,8 @@ def run():
     print("Press 'help' for the list of commands")
     while(True):
         inp = input().split()
+        if len(inp) == 0:
+            continue
         l = inp[0]
         if l == "get":
             print(getSettings().text)

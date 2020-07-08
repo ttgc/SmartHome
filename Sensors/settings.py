@@ -1,5 +1,6 @@
 
 class Settings:
+    
     def __init__(self, HouseName = "SmartHome2", ClimOn = 30, ClimOff = 23, HeatOn = 15, HeatOff = 20, TempUnit = 'C'):
         self.house_name = HouseName
         self.clim_on = ClimOn
@@ -28,3 +29,13 @@ class Settings:
 
     def setHeatOff(self, v):
         self.heat_off = v
+
+    def FromJson(js):
+        name = js.get("house_name")
+        cOn = js.get("clim_on")
+        cOff = js.get("clim_off")
+        hOn = js.get("heat_on")
+        hOff = js.get("heat_off")
+        tUnit = js.get("temperature_unit")
+        return Settings(name, cOn, cOff, hOn, hOff, tUnit)
+    
