@@ -13,5 +13,6 @@ def postTemperature(value):
 def getSettings():
     return requests.get(SettingsPath, verify=False)
 
-def postSettings(data):
-    return requests.post(SettingsPath, data = v, verify=False)
+def postSettings(d):
+    print(d)
+    return requests.post(SettingsPath, json = d, verify=False)
