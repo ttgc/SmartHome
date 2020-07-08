@@ -41,30 +41,35 @@ namespace Edge.Controllers
                 if (context.Unitstemperature.Find(body.temperature_unit) == null) return StatusCode(400);
 
                 IDoubleConverter converter = null;
-                if (settings.TempUnit.Value == 'C' && body.temperature_unit.Value == 'F')
+                if (settings.TempUnit.Value == 'C' || settings.TempUnit.Value == 'F')
                 {
-                    converter = new CelsiusToFahrenheit();
-                    settings.TempUnit = 'F';
-                }
-                else if (settings.TempUnit.Value == 'F' && body.temperature_unit.Value == 'C')
-                {
-                    converter = new FahrenheitToCelsius();
-                    settings.TempUnit = 'C';
+                    if (settings.TempUnit.Value == 'C' && body.temperature_unit.Value == 'F')
+                    {
+                        converter = new CelsiusToFahrenheit();
+                        settings.TempUnit = 'F';
+                    }
+                    else if (settings.TempUnit.Value == 'F' && body.temperature_unit.Value == 'C')
+                    {
+                        converter = new FahrenheitToCelsius();
+                        settings.TempUnit = 'C';
+                    }
                 }
                 else
                 {
                     return StatusCode(400);
                 }
-
-                foreach (var t in context.Temperature)
+                if (converter != null)
                 {
-                    t.Val = converter.Convert(t.Val);
+                    foreach (var t in context.Temperature)
+                    {
+                        t.Val = converter.Convert(t.Val);
+                    }
+                    settings.ClimOn = converter.Convert(settings.ClimOn.Value);
+                    settings.ClimOff = converter.Convert(settings.ClimOff.Value);
+                    settings.HeatOn = converter.Convert(settings.HeatOn.Value);
+                    settings.HeatOff = converter.Convert(settings.HeatOff.Value);
+                    context.SaveChanges();
                 }
-                settings.ClimOn = converter.Convert(settings.ClimOn.Value);
-                settings.ClimOff = converter.Convert(settings.ClimOff.Value);
-                settings.HeatOn = converter.Convert(settings.HeatOn.Value);
-                settings.HeatOff = converter.Convert(settings.HeatOff.Value);
-                context.SaveChanges();
             }
 
             if (!String.IsNullOrEmpty(body.house_name)) settings.HouseName = body.house_name;
