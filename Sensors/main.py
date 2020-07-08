@@ -1,16 +1,21 @@
 #!usr/bin/env python3
 #-*-coding:utf-8-*-
 
-import os, ssl
+import time
 
 from httpRequester import postTemperature, getSettings, postSettings
+from TemperatureSimulator import *
 
 def run():
     print("hello world!")
-    print("Temperature :")
-    print(postTemperature(23).text)
-    print("Settings :")
-    print(getSettings().text)
+    tS = TemperatureSimulator()
+    while(True):
+        time.sleep(1)
+        t = tS.getTemperature()
+        print("Send Temperature : " + str(t))
+        print(postTemperature(t).text)
+    #print("Settings :")
+    #print(getSettings().text)
     print("Bye Bye !")
 
 run()
