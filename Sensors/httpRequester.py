@@ -4,19 +4,15 @@
 import requests
 
 EdgePath = "https://localhost:5001/"
-SettingsPath = "api/Settings"
-TemperaturePath = "api/Temperature"
+#EdgePath = "https://localhost:5001/index.html"
+SettingsPath = EdgePath + "api/Settings/"
+TemperaturePath = EdgePath + "api/Temperature/"
 
-#basic class to encapsulate the http commands
-class httpRequester:
-    def __init__(self, path):
-        self._path = path
+def postTemperature(value):
+    return requests.post(TemperaturePath + str(value), verify=False)
 
-    def get():
-        return requests.get(self._path)
+def getSettings():
+    return requests.get(SettingsPath, verify=False)
 
-    def post(v):
-        return requests.post(self._path, data = v)
-
-temperatureRequester = httpRequester(EdgePath + TemperaturePath)
-settingsRequester = httpRequester(EdgePath + SettingsPath)
+def postSettings(data):
+    return requests.post(SettingsPath, data = v, verify=False)
