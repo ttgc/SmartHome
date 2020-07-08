@@ -18,7 +18,7 @@ def run():
     if len(sys.argv) > 1:
         delta_time = int(sys.argv[1])
     else:
-        print("You can set the first paraemeter of this program as the number of seconds between each calculation")
+        print("You can set the first parameter of this program as the number of seconds between each calculation")
     print("Temperature will be calculated every " + str(delta_time) + "s")
     while(True):
         time.sleep(delta_time)
