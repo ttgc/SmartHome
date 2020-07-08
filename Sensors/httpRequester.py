@@ -4,7 +4,6 @@
 import requests
 
 EdgePath = "https://localhost:5001/"
-#EdgePath = "https://localhost:5001/index.html"
 SettingsPath = EdgePath + "api/Settings/"
 TemperaturePath = EdgePath + "api/Temperature/"
 

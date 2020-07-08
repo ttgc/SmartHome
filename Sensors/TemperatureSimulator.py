@@ -1,23 +1,26 @@
+#!usr/bin/env python3
+#-*-coding:utf-8-*-
 
 import time
 import math
 import random
 
-NOISE_INTENSITY = 0.3
+NOISE_INTENSITY = 0.15
 HEAT_PER_SECOND = 0.0005
 MIN_HEAT_T = -20
 MAX_HEAT_T = 20
     
-mMIN_T = 0
-MMIN_T = 20
-mMAX_T = 15
-MMAX_T = 46
-MIN_HOUR = 2
-MAX_HOUR = 14
+mMIN_T = -5 #minimum natural temperature at night
+MMIN_T = 20 #maximum natural temperature at night
+mMAX_T = 15 #minimum natural temperature at day
+MMAX_T = 38 #maximum natural temperature at day
 
+MAX_HOUR = 14 #Zenith
+
+#time in one day in seconds
 TOTAL_DAY_TIME_S = 3600 * 24.0
 
-#the temperature simulator workd in degree, all time calculations are made inside of the class
+#the temperature simulator works in degree Celsius, all time calculations are made inside of the class
 class TemperatureSimulator:
     
     def __init__(self, minT = None, maxT = None, heat = False, clim = False):
@@ -42,6 +45,11 @@ class TemperatureSimulator:
         self.applyHeatNClim()
         self.clim = c
 
+    def setHeatClim(self, h, c):
+        self.applyHeatNClim()
+        self.heat = h
+        self.clim = c
+
     def applyHeatNClim(self):
         multiplier = 0
         if self.heat:
@@ -51,6 +59,7 @@ class TemperatureSimulator:
         t = time.time()
         delta_t = t - self.prevTime
         self.deltaT += multiplier * delta_t * HEAT_PER_SECOND
+        self.deltaT = min(max(MIN_HEAT_T, self.deltaT), MAX_HEAT_T)
         self.prevTime = t
     
     def getTemperature(self):
@@ -64,7 +73,6 @@ class TemperatureSimulator:
         t = time.localtime()
         rt = t.tm_hour * 3600 + t.tm_min * 60 + t.tm_sec
         theta = (rt - MAX_HOUR * 3600) / TOTAL_DAY_TIME_S
-        print(theta)
         delta = self.maxT - self.minT
         T += self.minT + delta * math.cos(theta)
         return T
