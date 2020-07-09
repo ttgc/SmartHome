@@ -1,22 +1,23 @@
 #!usr/bin/env python3
 #-*-coding:utf-8-*-
-#import psycopg-2
 
+import psycopg2
 import time
+import urllib3
 from edgeRequest import getTemperature
 
 dbname="Cloud"
-username_db="postgres"
-password_db="postgres"
+username_db="root"
+password_db="root"
 
 default_Location="Paris"
 measure_rate=60
 def run():
-    
+    urllib3.disable_warnings()
     connexion = init_db()
-    house_id = getHouseID(conn)
+    house_id = getHouseID(connexion)
 
-    print("Starting aquisition on edge, House n°"+house_id)
+    print("Starting aquisition on edge, House n"+str(house_id))
     while(True):
 
         stats= getTemperature()
@@ -31,12 +32,12 @@ def run():
 def init_db():
     
    
-    conn = psycopg2.connect(host="localhost",database=dbname, user=username, password=password_db)
+    conn = psycopg2.connect(host="localhost",database=dbname, user=username_db, password=password_db)
     db_cursor = conn.cursor()
     
     commands = (
     """
-        CREATE TABLE IF NOT EXISTS House (
+        CREATE TABLE IF NOT EXISTS Houses (
             house_id SERIAL PRIMARY KEY,
             location VARCHAR(255) NOT NULL
         )
@@ -45,25 +46,25 @@ def init_db():
         CREATE TABLE IF NOT EXISTS GeoTemp (
             measure_id SERIAL PRIMARY KEY,
             house_id SERIAL,
-            temperature_avg DOUBLE NOT NULL,
+            temperature_avg FLOAT(5) NOT NULL,
             temperature_unit CHAR,
-            delta DOUBLE,
-            clim_duration DOUBLE,
+            delta FLOAT(5),
+            clim_duration FLOAT(2),
+            heat_duration FLOAT(2),
             date VARCHAR(50),
-            FOREIGN KEY (house_id) REFERENCES Edge (id)
+            FOREIGN KEY (house_id) REFERENCES Houses (house_id)
         )
         """)
        
-        for command in commands:
-            cur.execute(command)
-        cur.close()
-        conn.commit()
+    for command in commands:
+        db_cursor.execute(command)
+    db_cursor.close()
+    conn.commit()
 
-        return conn
+    return conn
 
 def insert_data(conn, house_id, request):
     db_cursor=conn.cursor()
-     public string Statyear { get; set; }
     temp_avg = request.json().get("average")
     temp_delta= request.json().get("std_deviation")
     clim_duration= request.json().get("clim_duration")
@@ -73,28 +74,35 @@ def insert_data(conn, house_id, request):
     
 
     command= """INSERT INTO GeoTemp(house_id, temperature_avg, temperature_unit, delta,clim_duration,heat_duration,date)
-             VALUES("""+house_id+", "+temp_avg+", "+temp_delta+", "+clim_duration+", "+heat_duration+", "+year+") RETURNING measure_id;"""
+             VALUES("""+str(house_id)+", "+str(temp_avg)+", '"+temperature_unit+"', "+str(temp_delta)+", "+str(clim_duration)+", "+str(heat_duration)+", "+year+") RETURNING measure_id;"""
 
-    cur.execute(command)
+    db_cursor.execute(command)
 
-    measure_id= cur.fetchone()[0]
+    measure_id= db_cursor.fetchone()[0]
 
     conn.commit()
-    cur.close()
+    db_cursor.close()
     
 
     return measure_id
 
 def getHouseID(conn):
     db_cursor=conn.cursor()
-    command ="""SELECT house_id FROM House"""
-    cur.execute(command)
-    house_id = cur.fetchone()[0] #just taking the first one
-    if(house_id == None):
-        command =  """INSERT INTO House(location)
-             VALUES("""+default_Location+") RETURNING house_id;"""
-        cur.execute(command)
-        house_id =cur.fetchone()[0]
+    command ="""SELECT house_id FROM Houses"""
+    db_cursor.execute(command)
+    house_id=None
+    house_id_row = db_cursor.fetchone() #just taking the first one
+    if(house_id_row == None):
+        command =  """INSERT INTO Houses(location)
+             VALUES('"""+default_Location+"') RETURNING house_id;"
+        db_cursor.execute(command)
+        house_id =db_cursor.fetchone()[0]
+    else:
+        house_id=house_id_row[0]
+        
+    db_cursor.close()
+    conn.commit()
+    return house_id
 
 
 
