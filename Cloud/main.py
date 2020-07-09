@@ -65,12 +65,13 @@ def init_db():
 
 def insert_data(conn, house_id, request):
     db_cursor=conn.cursor()
-    temp_avg = request.json().get("average")
-    temp_delta= request.json().get("std_deviation")
-    clim_duration= request.json().get("clim_duration")
-    heat_duration= request.json().get("heat_duration")
-    year= request.json().get("year")
-    temperature_unit= request.json().get("temperature_unit")
+    json = request.json()
+    temp_avg = json.get("average")
+    temp_delta= json.get("std_deviation")
+    clim_duration= json.get("clim_duration")
+    heat_duration= json.get("heat_duration")
+    year= json.get("year")
+    temperature_unit= json.get("temperature_unit")
     
 
     command= """INSERT INTO GeoTemp(house_id, temperature_avg, temperature_unit, delta,clim_duration,heat_duration,date)
