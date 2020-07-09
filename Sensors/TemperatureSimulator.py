@@ -74,7 +74,7 @@ class TemperatureSimulator:
         t = time.localtime()
         rt = t.tm_hour * 3600 + t.tm_min * 60 + t.tm_sec
         theta = 2 * math.pi * (rt - MAX_HOUR * 3600) / TOTAL_DAY_TIME_S
-        delta = self.maxT - self.minT
-        T += self.minT + delta * math.cos(theta)
+        delta = (self.maxT - self.minT) / 2
+        T += (self.minT + self.maxT) / 2 + delta * math.cos(theta)
         return T
     
