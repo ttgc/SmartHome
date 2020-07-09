@@ -4,7 +4,7 @@
 from timer import *
 import requests
 
-EdgePath = "https://localhost:44335/"
+EdgePath = "https://localhost:5001/"
 SettingsPath = EdgePath + "api/Settings/"
 TemperaturePath = EdgePath + "api/Temperature/"
 
